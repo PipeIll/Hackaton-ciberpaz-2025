@@ -133,5 +133,5 @@ def update_map_and_table(n_clicks, nombre, latitud, longitud, tipo, detalle):
     return create_folium_map(df_puntos), "❌ Error: Debe ingresar el Nombre, Latitud y Longitud.", generate_table(df_puntos)
 
 if __name__ == '__main__':
-    print("App corriendo. Abre http://127.0.0.1:8050/ en tu navegador.")
+    print("Juan mamawebo digo glu glu glu  http://127.0.0.1:8050/.")
     app.run(debug=False)
