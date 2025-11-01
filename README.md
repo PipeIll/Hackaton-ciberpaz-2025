@@ -6,7 +6,6 @@
 
 # EcoElectronics 
 
-|       |
 | **Nombres**       | **Programa de Formación** |
 | Jeider López      | Ingeniería de Sistemas    |
 | Felipe Aparicio   | Ingeniería de Sistemas    |
@@ -16,7 +15,7 @@
 
 | Command | Description |
 | --- | --- |
-| git status | List all new or modified files |
+| Jeider López | List all new or modified files |
 | git diff | Show file differences that haven't been staged |
 
 ---
