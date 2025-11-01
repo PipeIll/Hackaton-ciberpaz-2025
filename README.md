@@ -14,6 +14,11 @@
 | Juan Aguilar      | Ingeniería de Sistemas    |
 | Sebastián Zúñiga  | Ingeniería de Sistemas    |
 
+| Command | Description |
+| --- | --- |
+| git status | List all new or modified files |
+| git diff | Show file differences that haven't been staged |
+
 ---
 
 | **Institución:** | **Universidad Distrital Francisco Jose de Caldas** |
