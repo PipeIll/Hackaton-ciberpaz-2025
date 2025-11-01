@@ -1,15 +1,15 @@
 # EcoElectronics 
-''' markdown
-| **Autores:** |
-| **Nombres** | **Programa de Formación** |
-| Jeider López | Ingeniería de Sistemas |
-| Felipe Aparicio | Ingeniería de Sistemas |
-| Emanuel Rodriguez | Ingeniería Catastral |
-| Juan Aguilar | Ingeniería de Sistemas |
-| Sebastián Zúñiga | Ingeniería de Sistemas |
+
+| **Autores:**      |
+| **Nombres**       | **Programa de Formación** |
+| Jeider López      | Ingeniería de Sistemas    |
+| Felipe Aparicio   | Ingeniería de Sistemas    |
+| Emanuel Rodriguez | Ingeniería Catastral      |
+| Juan Aguilar      | Ingeniería de Sistemas    |
+| Sebastián Zúñiga  | Ingeniería de Sistemas    |
 
 ---
-''' markdown
+
 | **Institución:** | **Universidad Distrital Francisco Jose de Caldas** |
 
 ---
