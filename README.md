@@ -25,7 +25,7 @@ El proyecto propone una aplicación o mapa web comunitario que permita ubicar y 
 
 Cada año, al desechar múltiples dispositivos electrónicos en toda Colombia sin un tratamiento adecuado, se contamina el entorno y se generan riesgos ambientales. Muchas personas desconocen cómo reciclar estos aparatos, lo que agrava el problema. Además, las plataformas actuales de reciclaje son poco accesibles, intuitivas o comercializables, ya que dependen de conexión constante a internet o simplemente ignoran las zonas rurales. 
 
-[Grafica de Contaminación en Colombia](https://www.scidev.net/america-latina/wp-content/uploads/sites/3/basura-electronica-2-995x499.png)
+![Grafica de Contaminación en Colombia](https://www.scidev.net/america-latina/wp-content/uploads/sites/3/basura-electronica-2-995x499.png)
 
 ### 2. Reto de Desarrollo
 Desarrollar una aplicación o mapa web comunitario que permita localizar, registrar y compartir puntos de recolección de residuos electrónicos (computadores, pilas, celulares, cargadores) de forma colaborativa y offline, incentivando la participación ciudadana mediante recompensas o insignias digitales. 
