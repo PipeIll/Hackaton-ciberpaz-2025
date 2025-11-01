@@ -1,4 +1,4 @@
-| Command | Description |
+| **Autores:** |
 | --- | --- |
 | git status | List all new or modified files |
 | git diff | Show file differences that haven't been staged |
@@ -6,7 +6,7 @@
 
 # EcoElectronics 
 
-| **Autores:**      |
+|       |
 | **Nombres**       | **Programa de Formación** |
 | Jeider López      | Ingeniería de Sistemas    |
 | Felipe Aparicio   | Ingeniería de Sistemas    |
