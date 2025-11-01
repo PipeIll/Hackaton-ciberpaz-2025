@@ -4,16 +4,26 @@ from dash import html
 from dash.dependencies import Input, Output, State
 import pandas as pd
 import folium
+import os
+
+DATA_FILE = 'puntos_reciclaje.csv'
 
 BOGOTA_COORDS = [4.65, -74.05] 
 MAP_ZOOM = 11
-df_puntos = pd.DataFrame({
-    'Nombre': ['Punto de Recolección Principal'],
-    'Latitud': [4.6521],
-    'Longitud': [-74.0636],
-    'Tipo': ['Centro Procesamiento'],
-    'Detalle': ['Direccion Kra juan-mamawebo.']
-})
+
+def load_data():
+    if os.path.exists(DATA_FILE):
+        return pd.read_csv(DATA_FILE)
+    else:
+        return pd.DataFrame({
+            'Nombre': ['Punto de Recolección Principal'],
+            'Latitud': [4.6521],
+            'Longitud': [-74.0636],
+            'Tipo': ['Centro Procesamiento'],
+            'Detalle': ['Direccion Kra juan-mamawebo.']
+        })
+
+df_puntos = load_data()
 
 def create_folium_map(df):
     m = folium.Map(
@@ -110,10 +120,11 @@ def generate_table(dataframe, max_rows=10):
      State('input-detalle', 'value')]
 )
 def update_map_and_table(n_clicks, nombre, latitud, longitud, tipo, detalle):
-    global df_puntos
+    
+    df_puntos_actual = load_data()
     
     if n_clicks is None or n_clicks == 0:
-        return create_folium_map(df_puntos), "", generate_table(df_puntos)
+        return create_folium_map(df_puntos_actual), "", generate_table(df_puntos_actual)
 
     if nombre and latitud is not None and longitud is not None:
         nuevo_punto = pd.DataFrame({
@@ -124,14 +135,16 @@ def update_map_and_table(n_clicks, nombre, latitud, longitud, tipo, detalle):
             'Detalle': [detalle if detalle else 'Sin detalles']
         })
         
-        df_puntos = pd.concat([df_puntos, nuevo_punto], ignore_index=True)
-        new_map_src = create_folium_map(df_puntos)
+        df_puntos_actual = pd.concat([df_puntos_actual, nuevo_punto], ignore_index=True)
+        df_puntos_actual.to_csv(DATA_FILE, index=False)
         
-        message = f"✅ Punto '{nombre}' agregado correctamente."
-        return new_map_src, message, generate_table(df_puntos)
+        new_map_src = create_folium_map(df_puntos_actual)
+        
+        message = f"✅ Punto '{nombre}' agregado y guardado."
+        return new_map_src, message, generate_table(df_puntos_actual)
     
-    return create_folium_map(df_puntos), "❌ Error: Debe ingresar el Nombre, Latitud y Longitud.", generate_table(df_puntos)
+    return create_folium_map(df_puntos_actual), "❌ Error: Debe ingresar el Nombre, Latitud y Longitud.", generate_table(df_puntos_actual)
 
 if __name__ == '__main__':
-    print("Juan mamawebo digo glu glu glu  http://127.0.0.1:8050/.")
+    print("App corriendo. Abre http://127.0.0.1:8050/ en tu navegador.")
     app.run(debug=False)
