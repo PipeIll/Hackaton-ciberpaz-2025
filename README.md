@@ -1,26 +1,19 @@
-| Command | Description |
-| --- | --- |
-| git status | List all new or modified files |
-| git diff | Show file differences that haven't been staged |
-
-
 # EcoElectronics 
 
-| **Nombres**       | **Programa de Formación** |
+| Nombres           | Programa de Formación     |
+|-------------------|---------------------------|
 | Jeider López      | Ingeniería de Sistemas    |
 | Felipe Aparicio   | Ingeniería de Sistemas    |
 | Emanuel Rodriguez | Ingeniería Catastral      |
 | Juan Aguilar      | Ingeniería de Sistemas    |
 | Sebastián Zúñiga  | Ingeniería de Sistemas    |
 
-| Command | Description |
-| --- | --- |
-| Jeider López | List all new or modified files |
-| git diff | Show file differences that haven't been staged |
 
 ---
 
-| **Institución:** | **Universidad Distrital Francisco Jose de Caldas** |
+| **Institución:** |
+|-------------------|
+|**Universidad Distrital Francisco Jose de Caldas** |
 
 ---
 
