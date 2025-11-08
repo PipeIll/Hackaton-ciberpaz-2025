@@ -54,6 +54,3 @@ Desarrollar una aplicación o mapa web comunitario que permita localizar, regist
 - Sección informativa con noticias, artículos, infografías y videos sobre reciclaje y manejo tecnológico responsable. 
 
 - Red social integrada tipo Instagram, que fomenta la interacción y el intercambio de experiencias entre usuarios. 
-
-## 5. Prototipo Inicial
-- Mapa interactivo semi-offline para ubicar puntos de reciclaje. 
