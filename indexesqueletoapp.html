@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoElectronics - Prototipo</title>
+    
+    <!-- Google Fonts: Poppins para un look moderno -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome para los iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Leaflet CSS para el mapa -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+
+    <style>
+        /* --- VARIABLES DE COLOR Y ESTILOS GLOBALES --- */
+        :root {
+            --primary-green: #2E7D32;
+            --light-green: #4CAF50;
+            --dark-green: #1B5E20;
+            --background-light: #F1F8E9;
+            --background-white: #FFFFFF;
+            --text-dark: #263238;
+            --text-light: #546E7A;
+            --border-color: #E0E0E0;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #c8e6c9; /* Un verde más fuerte para el fondo de la página */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+
+        /* --- CONTENEDOR QUE SIMULA EL TELÉFONO --- */
+        .phone-container {
+            width: 375px;
+            height: 812px; /* Altura de un iPhone X */
+            background-color: var(--background-white);
+            border-radius: 40px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            border: 10px solid #333;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* --- HEADER DE LA APP --- */
+        .app-header {
+            background-color: var(--primary-green);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .app-header i {
+            font-size: 1.8rem;
+        }
+
+        /* --- CONTENIDO PRINCIPAL (DONDE CAMBIAN LAS PANTALLAS) --- */
+        .app-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            background-color: var(--background-light);
+            position: relative;
+        }
+
+        /* --- CADA UNA DE LAS "PANTALLAS" DE LA APP --- */
+        .screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* --- ESTILOS DEL MAPA --- */
+        #map {
+            flex-grow: 1;
+            width: 100%;
+        }
+        
+        .fab-add-point {
+            position: absolute;
+            bottom: 80px; /* Dejamos espacio para la navegación */
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background-color: var(--light-green);
+            color: white;
+            border: none;
+            font-size: 24px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            z-index: 1000;
+        }
+
+        .fab-add-point:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* --- ESTILOS DE LAS TARJETAS (para recompensas, artículos, etc.) --- */
+        .card-container {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .card {
+            background-color: var(--background-white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            background-color: #ccc;
+        }
+
+        .card-content {
+            padding: 10px;
+        }
+
+        .card-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .card-points {
+            color: var(--primary-green);
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        /* --- ESTILOS DE LA COMUNIDAD (FEED TIPO INSTAGRAM) --- */
+        .feed-container {
+            padding: 10px;
+        }
+
+        .post {
+            background-color: var(--background-white);
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #ccc;
+            margin-right: 10px;
+        }
+
+        .post-username {
+            font-weight: 600;
+        }
+
+        .post-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .post-actions {
+            padding: 10px;
+            font-size: 1.5rem;
+        }
+
+        .post-actions i {
+            margin-right: 15px;
+            cursor: pointer;
+            color: var(--text-dark);
+        }
+
+        .post-actions i:hover {
+            color: var(--primary-green);
+        }
+
+        /* --- ESTILOS DEL PERFIL --- */
+        .profile-container {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #ccc;
+            margin: 0 auto 15px;
+            border: 4px solid var(--primary-green);
+        }
+
+        .profile-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .profile-level {
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            background-color: var(--background-white);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item h3 {
+            font-size: 1.5rem;
+            color: var(--primary-green);
+        }
+
+        .stat-item p {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .badges-container h3 {
+            margin-bottom: 10px;
+        }
+
+        .badges {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            font-size: 2rem;
+        }
+        
+        .badges i {
+            color: #FFD700; /* Color dorado para insignias */
+        }
+
+        /* --- BARRA DE NAVEGACIÓN INFERIOR --- */
+        .bottom-nav {
+            background-color: var(--background-white);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid var(--border-color);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: color 0.2s;
+            text-decoration: none;
+            font-size: 0.7rem;
+        }
+
+        .nav-item i {
+            font-size: 1.5rem;
+            margin-bottom: 3px;
+        }
+
+        .nav-item.active {
+            color: var(--primary-green);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="phone-container">
+        <!-- Header de la App -->
+        <header class="app-header">
+            <i class="fas fa-leaf"></i>
+            <span>EcoElectronics</span>
+        </header>
+
+        <!-- Contenido Principal donde se muestran las pantallas -->
+        <main class="app-content">
+            
+            <!-- PANTALLA 1: MAPA -->
+            <div id="screen-map" class="screen active">
+                <div id="map"></div>
+                <button class="fab-add-point" title="Añadir punto de reciclaje">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+
+            <!-- PANTALLA 2: RECOMPENSAS -->
+            <div id="screen-rewards" class="screen">
+                <div class="card-container">
+                    <div class="card">
+                        <img src="https://placehold.co/150x100/4CAF50/FFFFFF?text=Cupon" alt="Recompensa" class="card-image">
+                        <div class="card-content">
+                            <h4 class="card-title">10% de Descuento</h4>
+                            <p class="card-points"><i class="fas fa-coins"></i> 500 Puntos</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://placehold.co/150x100/2196F3/FFFFFF?text=Taza" alt="Recompensa" class="card-image">
+                        <div class="card-content">
+                            <h4 class="card-title">Taza Ecológica</h4>
+                            <p class="card-points"><i class="fas fa-coins"></i> 1200 Puntos</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://placehold.co/150x100/FF9800/FFFFFF?text=Bolsa" alt="Recompensa" class="card-image">
+                        <div class="card-content">
+                            <h4 class="card-title">Bolsa Reutilizable</h4>
+                            <p class="card-points"><i class="fas fa-coins"></i> 800 Puntos</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://placehold.co/150x100/9C27B0/FFFFFF?text=Auriculares" alt="Recompensa" class="card-image">
+                        <div class="card-content">
+                            <h4 class="card-title">Auriculares Reciclados</h4>
+                            <p class="card-points"><i class="fas fa-coins"></i> 3000 Puntos</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANTALLA 3: APRENDE -->
+            <div id="screen-learn" class="screen">
+                <div class="card-container">
+                    <div class="card">
+                        <img src="https://placehold.co/300x150/8BC34A/FFFFFF?text=Articulo" alt="Artículo" class="card-image">
+                        <div class="card-content">
+                            <h4 class="card-title">5 Tips para alargar la vida de tu batería</h4>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://placehold.co/300x150/00BCD4/FFFFFF?text=Infografia" alt="Infografía" class="card-image">
+                        <div class="card-content">
+                            <h4 class="card-title">Infografía: El ciclo de vida de un celular</h4>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://placehold.co/300x150/E91E63/FFFFFF?text=Video" alt="Video" class="card-image">
+                        <div class="card-content">
+                            <h4 class="card-title">Video: Cómo reciclar tu computador viejo</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANTALLA 4: COMUNIDAD -->
+            <div id="screen-community" class="screen">
+                <div class="feed-container">
+                    <div class="post">
+                        <div class="post-header">
+                            <div class="post-avatar"></div>
+                            <span class="post-username">AnaGarcia_Eco</span>
+                        </div>
+                        <img src="https://picsum.photos/seed/recycle1/375/300.jpg" alt="Post de comunidad" class="post-image">
+                        <div class="post-actions">
+                            <i class="far fa-heart"></i>
+                            <i class="far fa-comment"></i>
+                            <i class="far fa-paper-plane"></i>
+                        </div>
+                    </div>
+                    <div class="post">
+                        <div class="post-header">
+                            <div class="post-avatar"></div>
+                            <span class="post-username">CarlosTech</span>
+                        </div>
+                        <img src="https://picsum.photos/seed/recycle2/375/300.jpg" alt="Post de comunidad" class="post-image">
+                        <div class="post-actions">
+                            <i class="far fa-heart"></i>
+                            <i class="far fa-comment"></i>
+                            <i class="far fa-paper-plane"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANTALLA 5: PERFIL -->
+            <div id="screen-profile" class="screen">
+                <div class="profile-container">
+                    <div class="profile-avatar"></div>
+                    <h2 class="profile-name">Juan Pérez</h2>
+                    <p class="profile-level">Nivel: Guardián Verde</p>
+                    
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <h3>2,450</h3>
+                            <p>Puntos</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>12</h3>
+                            <p>Artículos Reciclados</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>5</h3>
+                            <p>Insignias</p>
+                        </div>
+                    </div>
+
+                    <div class="badges-container">
+                        <h3>Mis Insignias</h3>
+                        <div class="badges">
+                            <i class="fas fa-medal" title="Primer Reciclaje"></i>
+                            <i class="fas fa-trophy" title="100 Puntos"></i>
+                            <i class="fas fa-star" title="Super Reciclador"></i>
+                            <i class="fas fa-award" title="Colaborador"></i>
+                            <i class="fas fa-crown" title="Eco-Líder"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Barra de Navegación Inferior -->
+        <nav class="bottom-nav">
+            <a href="#" class="nav-item active" data-target="screen-map">
+                <i class="fas fa-map-marked-alt"></i>
+                <span>Mapa</span>
+            </a>
+            <a href="#" class="nav-item" data-target="screen-rewards">
+                <i class="fas fa-gift"></i>
+                <span>Recompensas</span>
+            </a>
+            <a href="#" class="nav-item" data-target="screen-learn">
+                <i class="fas fa-book-open"></i>
+                <span>Aprende</span>
+            </a>
+            <a href="#" class="nav-item" data-target="screen-community">
+                <i class="fas fa-users"></i>
+                <span>Comunidad</span>
+            </a>
+            <a href="#" class="nav-item" data-target="screen-profile">
+                <i class="fas fa-user-circle"></i>
+                <span>Perfil</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Leaflet JS para el mapa -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // --- LÓGICA DE NAVEGACIÓN ENTRE PANTALLAS ---
+            const navItems = document.querySelectorAll('.nav-item');
+            const screens = document.querySelectorAll('.screen');
+
+            navItems.forEach(item => {
+                item.addEventListener('click', (event) => {
+                    event.preventDefault();
+
+                    // 1. Quitar la clase 'active' de todos los items y pantallas
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    screens.forEach(screen => screen.classList.remove('active'));
+
+                    // 2. Añadir la clase 'active' al item clicado y su pantalla objetivo
+                    item.classList.add('active');
+                    const targetScreenId = item.getAttribute('data-target');
+                    document.getElementById(targetScreenId).classList.add('active');
+                });
+            });
+
+            // --- INICIALIZACIÓN DEL MAPA ---
+            // Solo inicializamos el mapa si el contenedor existe y está visible
+            const mapContainer = document.getElementById('map');
+            if (mapContainer) {
+                // Centrado en Colombia
+                const map = L.map('map').setView([4.5709, -74.2973], 5);
+
+                // Usamos OpenStreetMap que es gratuito
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+
+                // --- PUNTOS DE RECOLECCIÓN DE EJEMPLO ---
+                const recyclingPoints = [
+                    { coords: [4.6097, -74.0817], name: "Punto Bogotá - Centro", type: "Celulares y Baterías" },
+                    { coords: [6.2442, -75.5812], name: "Punto Medellín - Poblado", type: "Computadores y Accesorios" },
+                    { coords: [3.4516, -76.5319], name: "Punto Cali - Norte", type: "Todo tipo de electrónicos" },
+                    { coords: [10.9639, -74.7964], name: "Punto Barranquilla", type: "Componentes pequeños" },
+                    { coords: [7.1254, -73.1198], name: "Punto Bucaramanga", type: "Pilas y Cargadores" }
+                ];
+
+                recyclingPoints.forEach(point => {
+                    const marker = L.marker(point.coords).addTo(map);
+                    marker.bindPopup(`<b>${point.name}</b><br>${point.type}`);
+                });
+            }
+
+            // --- PEQUEÑAS INTERACCIONES ---
+            const fabButton = document.querySelector('.fab-add-point');
+            if (fabButton) {
+                fabButton.addEventListener('click', () => {
+                    alert('Función para proponer un nuevo punto de reciclaje. ¡Gracias por colaborar!');
+                });
+            }
+
+            const likeButtons = document.querySelectorAll('.post-actions .fa-heart');
+            likeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Cambia el ícono de 'far' (hollow) a 'fas' (solid)
+                    button.classList.toggle('far');
+                    button.classList.toggle('fas');
+                    if (button.classList.contains('fas')) {
+                        button.style.color = 'red';
+                    } else {
+                        button.style.color = 'var(--text-dark)';
+                    }
+                });
+            });
+
+        });
+    </script>
+</body>
+</html>
